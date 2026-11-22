@@ -11,6 +11,22 @@ ViewModelBase의 CreateObservable을 사용하여 생성한 Observable의 정리
 이 클래스는 Initialize가 호출된 시점의 값을 전달합니다. 런타임 필드 변경을 자동으로 감시하는 기능은 포함하지 않습니다.
 현재 코드에서 스탯에 전달하는 값은 BaseSTR 등의 기본 수치입니다.
 
+### Bootstrapper에서 ViewModel 생성·연결 (원본 일부 발췌)
+
+아래는 `MainGameBootStrapper.cs`의 객체 생성·초기화·View 연결 구간입니다.
+
+```csharp
+_playerViewModel = new PlayerViewModel();
+_playerViewModel.Initialize(_gameManager.PlayerData);
+
+string className = GetClassName(_gameManager.PlayerData.SelectedCharacterClassId);
+_mainGameView.Initialize(_playerViewModel, className);
+```
+
+Bootstrapper에서 ViewModel을 생성하고 플레이어 상태로 초기화한 뒤 View에 전달합니다. View가 ViewModel을 직접 생성하지 않고, 초기화 담당 코드에서 두 객체를 연결하는 구조입니다.
+
+원본 Bootstrapper에는 `GameManager.Instance` 참조가 있으므로 프로젝트 전체에서 싱글턴 의존성을 제거한 구조는 아닙니다.
+
 ## 2. 실제 전투 HP 바의 연결
 
 HealthBarView는 현재 HP와 최대 HP를 한 쌍으로 받습니다.
